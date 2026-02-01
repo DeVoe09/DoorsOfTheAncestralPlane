@@ -15,6 +15,7 @@ public class FirstPersonController : MonoBehaviour
 
     [Header("Emotion Abilities")]
     public float dashForce = 15f;
+    public float dashDuration = 0.2f; // How long dash lasts
     public int maxJumps = 2;
 
     // Private variables
@@ -23,7 +24,9 @@ public class FirstPersonController : MonoBehaviour
     private bool isGrounded;
     private float xRotation = 0f;
     private int jumpsRemaining = 0;
-    private bool canDash = false;
+    private bool isDashing = false;
+    private float dashTimer = 0f;
+    private Vector3 dashDirection;
 
     private void Awake()
     {
@@ -64,9 +67,19 @@ public class FirstPersonController : MonoBehaviour
         }
 
         HandleMouseLook();
-        HandleMovement();
-        HandleJump();
-        HandleEmotionAbilities();
+        
+        // Handle dash separately (overrides normal movement)
+        if (isDashing)
+        {
+            HandleDash();
+        }
+        else
+        {
+            HandleMovement();
+            HandleJump();
+            HandleEmotionAbilities();
+        }
+        
         ApplyGravity();
     }
 
@@ -134,17 +147,20 @@ public class FirstPersonController : MonoBehaviour
     private void HandleEmotionAbilities()
     {
         // Dash ability (Anger emotion) - Press Left Control
-        if (Input.GetKeyDown(KeyCode.LeftControl) && EmotionManager.Instance != null && EmotionManager.Instance.HasDash())
+        if (Input.GetKeyDown(KeyCode.LeftControl) && EmotionManager.Instance != null && EmotionManager.Instance.HasDash() && !isDashing)
         {
-            Vector3 dashDirection = transform.forward;
+            // Start dash
+            isDashing = true;
+            dashTimer = dashDuration;
+            
+            // Determine dash direction
+            dashDirection = transform.forward;
             if (Input.GetKey(KeyCode.W)) dashDirection = transform.forward;
             else if (Input.GetKey(KeyCode.S)) dashDirection = -transform.forward;
             else if (Input.GetKey(KeyCode.A)) dashDirection = -transform.right;
             else if (Input.GetKey(KeyCode.D)) dashDirection = transform.right;
-
-            // Apply instant dash movement (not velocity)
-            controller.Move(dashDirection * dashForce);
-            Debug.Log("DASH! Moved " + dashForce + " units in direction: " + dashDirection);
+            
+            Debug.Log("DASH started!");
         }
 
         // Slow-mo perception (Calm emotion) - Hold Left Alt
@@ -166,6 +182,24 @@ public class FirstPersonController : MonoBehaviour
         {
             // Restore normal time if not in Calm realm
             Time.timeScale = 1.0f;
+        }
+    }
+    
+    private void HandleDash()
+    {
+        if (dashTimer > 0)
+        {
+            // Apply dash movement with smooth deceleration
+            float dashSpeed = dashForce * (dashTimer / dashDuration);
+            controller.Move(dashDirection * dashSpeed * Time.deltaTime);
+            
+            dashTimer -= Time.deltaTime;
+            
+            if (dashTimer <= 0)
+            {
+                isDashing = false;
+                Debug.Log("DASH ended");
+            }
         }
     }
 

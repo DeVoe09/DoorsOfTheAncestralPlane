@@ -9,6 +9,15 @@ public class GameManager : MonoBehaviour
     public int currentRealm = 0; // 0 = Ancestral Plane, 1 = Anger, 2 = Calm, 3 = Joy
     public float balanceMeter = 50f; // 0-100, starts at 50
     public float sessionTime = 0f;
+    public bool isPlayerInRealm = false;
+
+    [Header("Realm Completion")]
+    public bool angerRealmCompleted = false;
+    public bool calmRealmCompleted = false;
+    public bool joyRealmCompleted = false;
+
+    [Header("Current Emotion")]
+    public EmotionalState currentEmotion = EmotionalState.Neutral;
 
     // Events
     public delegate void BalanceChanged(float newBalance);
@@ -44,8 +53,30 @@ public class GameManager : MonoBehaviour
         }
 
         currentRealm = realmIndex;
+        isPlayerInRealm = (realmIndex > 0); // 0 = Ancestral Plane, >0 = emotion realm
         SceneManager.LoadScene(realmSceneNames[realmIndex]);
         Debug.Log("Entering realm: " + realmSceneNames[realmIndex]);
+    }
+
+    public void EnterRealm(EmotionalState emotion)
+    {
+        int realmIndex = 0;
+        switch (emotion)
+        {
+            case EmotionalState.Anger:
+                realmIndex = 1;
+                break;
+            case EmotionalState.Calm:
+                realmIndex = 2;
+                break;
+            case EmotionalState.Joy:
+                realmIndex = 3;
+                break;
+            default:
+                realmIndex = 0;
+                break;
+        }
+        EnterRealm(realmIndex);
     }
 
     public void UpdateBalance(float change)
@@ -59,7 +90,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Balance updated: " + balanceMeter + " (Change: " + change + ")");
     }
 
-    public void CompleteRealm()
+    public void CompleteRealm(bool success = true)
     {
         if (currentRealm == 0)
         {
@@ -76,10 +107,46 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // Completed an emotion realm
-            Debug.Log("Completed realm " + currentRealm + ". Returning to Ancestral Plane.");
+            // Mark realm as completed
+            if (success)
+            {
+                switch (currentRealm)
+                {
+                    case 1:
+                        angerRealmCompleted = true;
+                        break;
+                    case 2:
+                        calmRealmCompleted = true;
+                        break;
+                    case 3:
+                        joyRealmCompleted = true;
+                        break;
+                }
+                Debug.Log("Completed realm " + currentRealm + ". Returning to Ancestral Plane.");
+            }
+            else
+            {
+                Debug.Log("Failed realm " + currentRealm + ". Returning to Ancestral Plane.");
+            }
+            
+            // Return to Ancestral Plane
             EnterRealm(0);
         }
+    }
+
+    public bool CanEnterWhiteDoor()
+    {
+        return balanceMeter >= 75f;
+    }
+
+    public void RecordMindfulAction()
+    {
+        UpdateBalance(5f); // Increase balance for mindful actions
+    }
+
+    public void RecordChaoticAction()
+    {
+        UpdateBalance(-5f); // Decrease balance for chaotic actions
     }
 
     public string GetCurrentRealmName()
@@ -94,5 +161,18 @@ public class GameManager : MonoBehaviour
     public float GetSessionTimeMinutes()
     {
         return sessionTime / 60f;
+    }
+
+    public bool AreAllRealmsCompleted()
+    {
+        return angerRealmCompleted && calmRealmCompleted && joyRealmCompleted;
+    }
+
+    public IEnumerator<object> TriggerEnding(bool isWhiteDoorEnding)
+    {
+        // Placeholder for ending sequence
+        Debug.Log("=== ENDING SEQUENCE ===");
+        yield return new WaitForSeconds(2f);
+        Debug.Log("Game Complete!");
     }
 }

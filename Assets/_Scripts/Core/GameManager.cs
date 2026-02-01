@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public float balanceMeter = 50f; // 0-100, starts at 50
     public float sessionTime = 0f;
 
-    [Header("Events")]
+    // Events
     public delegate void BalanceChanged(float newBalance);
     public static event BalanceChanged OnBalanceChanged;
 

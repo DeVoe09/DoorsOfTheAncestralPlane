@@ -31,7 +31,7 @@ public class EmotionManager : MonoBehaviour
     public Material joyTint;
     public Material neutralTint;
 
-    [Header("Events")]
+    // Events
     public delegate void EmotionChanged(EmotionalState newState);
     public static event EmotionChanged OnEmotionChanged;
 

@@ -128,16 +128,13 @@ public class SceneSetup : MonoBehaviour
         door.transform.position = position;
         door.transform.localScale = new Vector3(2, 3, 0.5f);
 
-        // Set color - Create a new material to avoid losing color on play
+        // Set color - Use a simple approach
         Renderer renderer = door.GetComponent<Renderer>();
         if (renderer != null)
         {
-            // Create a new material instance
-            Material doorMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-            doorMaterial.color = color;
-            doorMaterial.EnableKeyword("_EMISSION");
-            doorMaterial.SetColor("_EmissionColor", color * 0.5f);
-            renderer.material = doorMaterial;
+            // Just set the color directly on the shared material
+            // This will be preserved across play mode
+            renderer.sharedMaterial.color = color;
         }
 
         // Add collider
@@ -158,15 +155,11 @@ public class SceneSetup : MonoBehaviour
         door.transform.position = position;
         door.transform.localScale = new Vector3(2, 3, 0.5f);
 
-        // Set white color - Create a new material to avoid losing color on play
+        // Set white color - Use shared material
         Renderer renderer = door.GetComponent<Renderer>();
         if (renderer != null)
         {
-            Material doorMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-            doorMaterial.color = Color.white;
-            doorMaterial.EnableKeyword("_EMISSION");
-            doorMaterial.SetColor("_EmissionColor", Color.white * 0.5f);
-            renderer.material = doorMaterial;
+            renderer.sharedMaterial.color = Color.white;
         }
 
         // Add collider

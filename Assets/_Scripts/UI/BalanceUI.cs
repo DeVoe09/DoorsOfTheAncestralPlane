@@ -6,131 +6,118 @@ public class BalanceUI : MonoBehaviour
     [Header("UI References")]
     public Slider balanceSlider;
     public Text balanceText;
-    public Text realmText;
     public Text emotionText;
-    public Text timerText;
-
+    
     [Header("Colors")]
-    public Color chaosColor = Color.red;
-    public Color balancedColor = Color.yellow;
-    public Color clarityColor = Color.green;
-
-    private void OnEnable()
-    {
-        // Subscribe to events
-        if (GameManager.Instance != null)
-        {
-            GameManager.OnBalanceChanged += UpdateBalanceDisplay;
-        }
-
-        if (EmotionManager.Instance != null)
-        {
-            EmotionManager.OnEmotionChanged += UpdateEmotionDisplay;
-        }
-    }
-
-    private void OnDisable()
-    {
-        // Unsubscribe from events
-        if (GameManager.Instance != null)
-        {
-            GameManager.OnBalanceChanged -= UpdateBalanceDisplay;
-        }
-
-        if (EmotionManager.Instance != null)
-        {
-            EmotionManager.OnEmotionChanged -= UpdateEmotionDisplay;
-        }
-    }
-
+    public Color lowBalanceColor = Color.red;
+    public Color mediumBalanceColor = Color.yellow;
+    public Color highBalanceColor = Color.green;
+    
     private void Start()
     {
-        UpdateAllDisplays();
-    }
-
-    private void Update()
-    {
-        UpdateTimerDisplay();
-    }
-
-    private void UpdateAllDisplays()
-    {
-        if (GameManager.Instance != null)
+        // Find or create UI elements if not assigned
+        if (balanceSlider == null)
         {
-            UpdateBalanceDisplay(GameManager.Instance.balanceMeter);
-            UpdateRealmDisplay();
+            balanceSlider = GetComponentInChildren<Slider>();
         }
-
-        if (EmotionManager.Instance != null)
+        
+        if (balanceText == null)
         {
-            UpdateEmotionDisplay(EmotionManager.Instance.GetCurrentState());
-        }
-    }
-
-    private void UpdateBalanceDisplay(float newBalance)
-    {
-        if (balanceSlider != null)
-        {
-            balanceSlider.value = newBalance / 100f;
-        }
-
-        if (balanceText != null)
-        {
-            balanceText.text = "Balance: " + Mathf.RoundToInt(newBalance) + "%";
-        }
-
-        // Update color based on balance
-        if (balanceSlider != null && balanceSlider.fillRect != null)
-        {
-            Image fillImage = balanceSlider.fillRect.GetComponent<Image>();
-            if (fillImage != null)
+            // Try to find a Text component
+            Text[] texts = GetComponentsInChildren<Text>();
+            foreach (Text t in texts)
             {
-                if (newBalance < 25f)
+                if (t.name.Contains("Balance") || t.name.Contains("balance"))
                 {
-                    fillImage.color = chaosColor;
-                }
-                else if (newBalance > 75f)
-                {
-                    fillImage.color = clarityColor;
-                }
-                else
-                {
-                    fillImage.color = balancedColor;
+                    balanceText = t;
+                    break;
                 }
             }
         }
-    }
-
-    private void UpdateRealmDisplay()
-    {
-        if (realmText != null && GameManager.Instance != null)
+        
+        // Subscribe to balance changes
+        if (GameManager.Instance != null)
         {
-            realmText.text = "Realm: " + GameManager.Instance.GetCurrentRealmName();
+            UpdateBalanceUI(GameManager.Instance.balanceMeter);
+        }
+        
+        // Subscribe to emotion changes
+        if (EmotionManager.Instance != null)
+        {
+            UpdateEmotionUI(EmotionManager.Instance.GetCurrentState());
         }
     }
-
-    private void UpdateEmotionDisplay(EmotionalState newState)
+    
+    private void OnEnable()
+    {
+        // Subscribe to events
+        GameManager.OnBalanceChanged += UpdateBalanceUI;
+        EmotionManager.OnEmotionChanged += UpdateEmotionUI;
+    }
+    
+    private void OnDisable()
+    {
+        // Unsubscribe from events
+        GameManager.OnBalanceChanged -= UpdateBalanceUI;
+        EmotionManager.OnEmotionChanged -= UpdateEmotionUI;
+    }
+    
+    private void UpdateBalanceUI(float newBalance)
+    {
+        // Update slider
+        if (balanceSlider != null)
+        {
+            balanceSlider.value = newBalance / 100f; // Normalize to 0-1 range
+        }
+        
+        // Update text
+        if (balanceText != null)
+        {
+            balanceText.text = "Balance: " + newBalance.ToString("F0") + "%";
+            
+            // Change color based on balance
+            if (newBalance < 30)
+            {
+                balanceText.color = lowBalanceColor;
+            }
+            else if (newBalance < 70)
+            {
+                balanceText.color = mediumBalanceColor;
+            }
+            else
+            {
+                balanceText.color = highBalanceColor;
+            }
+        }
+        
+        Debug.Log("BalanceUI updated: " + newBalance + "%");
+    }
+    
+    private void UpdateEmotionUI(EmotionalState newEmotion)
     {
         if (emotionText != null)
         {
-            emotionText.text = "Emotion: " + newState.ToString();
+            string emotionName = newEmotion.ToString();
+            emotionText.text = "Emotion: " + emotionName;
+            
+            // Change color based on emotion
+            switch (newEmotion)
+            {
+                case EmotionalState.Anger:
+                    emotionText.color = Color.red;
+                    break;
+                case EmotionalState.Calm:
+                    emotionText.color = Color.blue;
+                    break;
+                case EmotionalState.Joy:
+                    emotionText.color = Color.yellow;
+                    break;
+                case EmotionalState.Neutral:
+                    emotionText.color = Color.white;
+                    break;
+            }
         }
-    }
-
-    private void UpdateTimerDisplay()
-    {
-        if (timerText != null && GameManager.Instance != null)
-        {
-            float minutes = GameManager.Instance.GetSessionTimeMinutes();
-            int mins = Mathf.FloorToInt(minutes);
-            int secs = Mathf.FloorToInt((minutes - mins) * 60);
-            timerText.text = string.Format("Time: {0:00}:{1:00}", mins, secs);
-        }
-    }
-
-    // Public method for manual updates
-    public void RefreshUI()
-    {
-        UpdateAllDisplays();
+        
+        Debug.Log("EmotionUI updated: " + newEmotion);
     }
 }

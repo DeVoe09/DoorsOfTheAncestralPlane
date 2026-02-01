@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         if (realmIndex >= 0 && realmIndex < realmsCompleted.Length)
         {
             realmsCompleted[realmIndex] = true;
-            Debug.Log($"Realm {realmIndex} completed!");
+            Debug.Log("Realm " + realmIndex + " completed!");
         }
     }
 }

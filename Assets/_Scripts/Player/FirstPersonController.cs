@@ -18,16 +18,6 @@ public class FirstPersonController : MonoBehaviour
     void Awake()
     {
         controller = GetComponent<CharacterController>();
-        
-        if (controller == null)
-        {
-            Debug.LogError("CharacterController component not found on this GameObject!");
-        }
-        
-        if (cameraTransform == null)
-        {
-            Debug.LogError("Camera Transform not assigned in FirstPersonController!");
-        }
     }
 
     void Start()
@@ -37,8 +27,11 @@ public class FirstPersonController : MonoBehaviour
 
     void Update()
     {
-        if (controller == null || cameraTransform == null) return;
-        
+        if (controller == null || cameraTransform == null)
+        {
+            return;
+        }
+
         HandleMovement();
         HandleCamera();
     }
@@ -51,11 +44,9 @@ public class FirstPersonController : MonoBehaviour
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * baseSpeed * Time.deltaTime);
 
-        // Gravity
         velocity.y += Physics.gravity.y * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        // Jump
         if (controller.isGrounded && Input.GetButtonDown("Jump"))
         {
             velocity.y = Mathf.Sqrt(jumpForce * -2f * Physics.gravity.y);

@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviour
         return angerRealmCompleted && calmRealmCompleted && joyRealmCompleted;
     }
 
-    public IEnumerator<object> TriggerEnding(bool isWhiteDoorEnding)
+    public IEnumerator TriggerEnding(bool isWhiteDoorEnding)
     {
         // Placeholder for ending sequence
         Debug.Log("=== ENDING SEQUENCE ===");

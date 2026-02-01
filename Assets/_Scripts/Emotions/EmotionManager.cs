@@ -1,11 +1,12 @@
 using UnityEngine;
 
+// Emotional states for the game
 public enum EmotionalState
 {
-    Neutral,
-    Anger,
-    Calm,
-    Joy
+    Neutral,    // Default state in Ancestral Plane
+    Anger,      // Red door - fast, aggressive
+    Calm,       // Blue door - slow, mindful
+    Joy         // Yellow door - energetic, double jump
 }
 
 public class EmotionManager : MonoBehaviour

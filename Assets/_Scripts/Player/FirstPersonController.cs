@@ -230,9 +230,4 @@ public class FirstPersonController : MonoBehaviour
         Debug.Log("Double jump unlocked!");
     }
 
-    public void UnlockDash()
-    {
-        canDash = true;
-        Debug.Log("Dash unlocked!");
-    }
 }

@@ -82,7 +82,7 @@ public class DoorController : MonoBehaviour
     {
         if (isLocked)
         {
-            Debug.Log(doorName + " is locked. Need balance: " + unlockBalanceThreshold);
+            Debug.Log(doorName + " is locked. Need balance: " + unlockBalanceThreshold + ". Current balance: " + (GameManager.Instance != null ? GameManager.Instance.balanceMeter.ToString() : "N/A"));
             
             if (GameManager.Instance != null && GameManager.Instance.balanceMeter >= unlockBalanceThreshold)
             {

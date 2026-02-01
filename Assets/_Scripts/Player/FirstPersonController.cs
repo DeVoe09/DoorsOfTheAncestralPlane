@@ -119,6 +119,21 @@ public class FirstPersonController : MonoBehaviour
         }
 
         controller.Move(move * currentSpeed * Time.deltaTime);
+        
+        // Track balance - Chaotic actions (running, dashing)
+        if (GameManager.Instance != null)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && (x != 0 || z != 0))
+            {
+                // Running is chaotic
+                GameManager.Instance.RecordChaoticAction();
+            }
+            else if (x == 0 && z == 0)
+            {
+                // Standing still is mindful
+                GameManager.Instance.RecordMindfulAction();
+            }
+        }
     }
 
     private void HandleJump()
@@ -159,6 +174,12 @@ public class FirstPersonController : MonoBehaviour
             else if (Input.GetKey(KeyCode.S)) dashDirection = -transform.forward;
             else if (Input.GetKey(KeyCode.A)) dashDirection = -transform.right;
             else if (Input.GetKey(KeyCode.D)) dashDirection = transform.right;
+            
+            // Record chaotic action (dash)
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RecordChaoticAction();
+            }
             
             Debug.Log("DASH started!");
         }

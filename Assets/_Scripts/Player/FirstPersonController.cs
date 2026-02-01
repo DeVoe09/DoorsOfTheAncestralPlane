@@ -53,6 +53,16 @@ public class FirstPersonController : MonoBehaviour
     {
         if (controller == null || cameraTransform == null) return;
 
+        // Check grounding FIRST, before any other updates
+        isGrounded = controller.isGrounded;
+        
+        // Reset velocity and jumps when grounded
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+            jumpsRemaining = maxJumps;
+        }
+
         HandleMouseLook();
         HandleMovement();
         HandleJump();
@@ -94,15 +104,6 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleJump()
     {
-        // Check if player is grounded (with a small tolerance)
-        isGrounded = controller.isGrounded;
-        
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f; // Small downward force to keep player grounded
-            jumpsRemaining = maxJumps; // Reset jumps when grounded
-        }
-
         if (Input.GetButtonDown("Jump"))
         {
             if (isGrounded)
@@ -153,15 +154,10 @@ public class FirstPersonController : MonoBehaviour
 
     private void ApplyGravity()
     {
-        isGrounded = controller.isGrounded;
-
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-            jumpsRemaining = maxJumps; // Reset jumps when grounded
-        }
-
+        // Apply gravity to vertical velocity
         velocity.y += gravity * Time.deltaTime;
+        
+        // Move the controller
         controller.Move(velocity * Time.deltaTime);
     }
 

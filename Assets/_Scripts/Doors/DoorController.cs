@@ -69,8 +69,11 @@ public class DoorController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("OnTriggerEnter: " + other.gameObject.name + " - Tag: " + other.tag);
+        
         if (other.CompareTag("Player"))
         {
+            Debug.Log("Player detected! Trying to enter door...");
             TryEnterDoor();
         }
     }

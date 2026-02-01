@@ -40,19 +40,30 @@ public class DoorController : MonoBehaviour
     {
         if (doorRenderer == null) return;
 
+        // Only change material if the material fields are assigned
+        // Otherwise, keep the existing material color
         if (targetRealmIndex == 0 && GameManager.Instance != null && GameManager.Instance.balanceMeter >= 75f)
         {
             // White door for ending
-            doorRenderer.material = whiteDoorMaterial;
+            if (whiteDoorMaterial != null)
+            {
+                doorRenderer.material = whiteDoorMaterial;
+            }
             isLocked = false;
         }
         else if (isLocked)
         {
-            doorRenderer.material = lockedMaterial;
+            if (lockedMaterial != null)
+            {
+                doorRenderer.material = lockedMaterial;
+            }
         }
         else
         {
-            doorRenderer.material = unlockedMaterial;
+            if (unlockedMaterial != null)
+            {
+                doorRenderer.material = unlockedMaterial;
+            }
         }
     }
 

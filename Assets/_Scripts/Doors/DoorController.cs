@@ -99,6 +99,18 @@ public class DoorController : MonoBehaviour
             audioSource.PlayOneShot(enterSound);
         }
 
+        // Check if this is the White Door (ending)
+        if (doorName.Contains("White Door") || doorName.Contains("white door"))
+        {
+            // Trigger ending
+            if (GameManager.Instance != null)
+            {
+                Debug.Log("White Door entered! Triggering ending...");
+                GameManager.Instance.StartCoroutine(GameManager.Instance.TriggerEnding(true));
+            }
+            return;
+        }
+
         // Set emotion based on target realm
         if (EmotionManager.Instance != null)
         {

@@ -128,11 +128,16 @@ public class SceneSetup : MonoBehaviour
         door.transform.position = position;
         door.transform.localScale = new Vector3(2, 3, 0.5f);
 
-        // Set color
+        // Set color - Create a new material to avoid losing color on play
         Renderer renderer = door.GetComponent<Renderer>();
         if (renderer != null)
         {
-            renderer.material.color = color;
+            // Create a new material instance
+            Material doorMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            doorMaterial.color = color;
+            doorMaterial.EnableKeyword("_EMISSION");
+            doorMaterial.SetColor("_EmissionColor", color * 0.5f);
+            renderer.material = doorMaterial;
         }
 
         // Add collider
@@ -153,11 +158,15 @@ public class SceneSetup : MonoBehaviour
         door.transform.position = position;
         door.transform.localScale = new Vector3(2, 3, 0.5f);
 
-        // Set white color
+        // Set white color - Create a new material to avoid losing color on play
         Renderer renderer = door.GetComponent<Renderer>();
         if (renderer != null)
         {
-            renderer.material.color = Color.white;
+            Material doorMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            doorMaterial.color = Color.white;
+            doorMaterial.EnableKeyword("_EMISSION");
+            doorMaterial.SetColor("_EmissionColor", Color.white * 0.5f);
+            renderer.material = doorMaterial;
         }
 
         // Add collider

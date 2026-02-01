@@ -173,4 +173,36 @@ public class SceneSetup : MonoBehaviour
         doorController.isLocked = true;
         doorController.SetBalanceThreshold(75f);
     }
+    
+    [ContextMenu("Create Return Door")]
+    public void CreateReturnDoor()
+    {
+        CreateReturnDoor(new Vector3(0, 1, -5));
+    }
+    
+    private void CreateReturnDoor(Vector3 position)
+    {
+        GameObject door = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        door.name = "Return Door";
+        door.transform.position = position;
+        door.transform.localScale = new Vector3(2, 3, 0.5f);
+        
+        // Set blue color for return door
+        Renderer renderer = door.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderer.sharedMaterial.color = new Color(0.3f, 0.5f, 1f); // Light blue
+        }
+        
+        // Add collider as trigger
+        BoxCollider collider = door.AddComponent<BoxCollider>();
+        collider.isTrigger = true;
+        
+        // Add ReturnDoor component
+        ReturnDoor returnDoor = door.AddComponent<ReturnDoor>();
+        returnDoor.targetScene = "AncestralPlane";
+        returnDoor.isLocked = false;
+        
+        Debug.Log("Created return door at " + position);
+    }
 }

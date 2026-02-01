@@ -1,6 +1,7 @@
-using UnityEngine; 
+using UnityEngine;
 
-public class FirstPersonController : MonoBehaviour 
+[RequireComponent(typeof(CharacterController))]
+public class FirstPersonController : MonoBehaviour
 {
     [Header("Movement")]
     public float baseSpeed = 5f;
@@ -17,6 +18,16 @@ public class FirstPersonController : MonoBehaviour
     void Awake()
     {
         controller = GetComponent<CharacterController>();
+        
+        if (controller == null)
+        {
+            Debug.LogError("CharacterController component not found on this GameObject!");
+        }
+        
+        if (cameraTransform == null)
+        {
+            Debug.LogError("Camera Transform not assigned in FirstPersonController!");
+        }
     }
 
     void Start()
@@ -26,6 +37,8 @@ public class FirstPersonController : MonoBehaviour
 
     void Update()
     {
+        if (controller == null || cameraTransform == null) return;
+        
         HandleMovement();
         HandleCamera();
     }

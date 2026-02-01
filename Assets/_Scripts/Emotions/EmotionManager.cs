@@ -1,15 +1,15 @@
-using UnityEngine; 
-using System; 
+using UnityEngine;
+using System;
 
-public enum EmotionalState 
-{ 
-    Neutral, 
-    Anger, 
-    Calm, 
-    Joy 
+public enum EmotionalState
+{
+    Neutral,
+    Anger,
+    Calm,
+    Joy
 }
 
-public class EmotionManager : MonoBehaviour 
+public class EmotionManager : MonoBehaviour
 {
     [Header("Emotion State")]
     public EmotionalState currentState = EmotionalState.Neutral;

@@ -94,17 +94,32 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleJump()
     {
+        // Check if player is grounded (with a small tolerance)
+        isGrounded = controller.isGrounded;
+        
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f; // Small downward force to keep player grounded
+            jumpsRemaining = maxJumps; // Reset jumps when grounded
+        }
+
         if (Input.GetButtonDown("Jump"))
         {
             if (isGrounded)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 jumpsRemaining = maxJumps - 1;
+                Debug.Log("Jumped! Grounded: " + isGrounded);
             }
             else if (EmotionManager.Instance != null && EmotionManager.Instance.CanDoubleJump() && jumpsRemaining > 0)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 jumpsRemaining--;
+                Debug.Log("Double Jump! Jumps remaining: " + jumpsRemaining);
+            }
+            else
+            {
+                Debug.Log("Cannot jump. Grounded: " + isGrounded + ", Jumps remaining: " + jumpsRemaining);
             }
         }
     }

@@ -24,6 +24,7 @@ public class SceneSetup : MonoBehaviour
         }
     }
 
+    [ContextMenu("Setup Scene")]
     public void SetupScene()
     {
         Debug.Log("Setting up scene...");
@@ -102,6 +103,7 @@ public class SceneSetup : MonoBehaviour
     }
 
     // Helper methods for manual setup
+    [ContextMenu("Create Ancestral Plane Setup")]
     public void CreateAncestralPlaneSetup()
     {
         // Create spawn point

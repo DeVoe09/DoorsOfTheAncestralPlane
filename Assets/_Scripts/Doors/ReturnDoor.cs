@@ -69,6 +69,12 @@ public class ReturnDoor : MonoBehaviour
         // Return to Ancestral Plane
         Debug.Log("Returning to Ancestral Plane...");
         
+        // Reset emotion to Neutral
+        if (EmotionManager.Instance != null)
+        {
+            EmotionManager.Instance.SetEmotion(EmotionalState.Neutral);
+        }
+        
         if (audioSource != null)
         {
             // Play sound if available

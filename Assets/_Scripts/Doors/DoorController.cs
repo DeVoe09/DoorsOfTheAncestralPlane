@@ -99,6 +99,26 @@ public class DoorController : MonoBehaviour
             audioSource.PlayOneShot(enterSound);
         }
 
+        // Set emotion based on target realm
+        if (EmotionManager.Instance != null)
+        {
+            switch (targetRealmIndex)
+            {
+                case 1: // Anger Realm
+                    EmotionManager.Instance.SetEmotion(EmotionalState.Anger);
+                    break;
+                case 2: // Calm Realm
+                    EmotionManager.Instance.SetEmotion(EmotionalState.Calm);
+                    break;
+                case 3: // Joy Realm
+                    EmotionManager.Instance.SetEmotion(EmotionalState.Joy);
+                    break;
+                default: // Ancestral Plane (0) or other
+                    EmotionManager.Instance.SetEmotion(EmotionalState.Neutral);
+                    break;
+            }
+        }
+
         if (GameManager.Instance != null)
         {
             GameManager.Instance.EnterRealm(targetRealmIndex);

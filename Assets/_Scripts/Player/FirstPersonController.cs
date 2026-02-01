@@ -98,6 +98,12 @@ public class FirstPersonController : MonoBehaviour
 
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
         currentSpeed *= speedMultiplier;
+        
+        // Debug log for speed (only when moving)
+        if ((x != 0 || z != 0) && Time.frameCount % 60 == 0) // Log once per second
+        {
+            Debug.Log("Speed multiplier: " + speedMultiplier + "x, Current speed: " + currentSpeed);
+        }
 
         controller.Move(move * currentSpeed * Time.deltaTime);
     }
@@ -127,7 +133,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleEmotionAbilities()
     {
-        // Dash ability (Anger emotion)
+        // Dash ability (Anger emotion) - Press Left Control
         if (Input.GetKeyDown(KeyCode.LeftControl) && EmotionManager.Instance != null && EmotionManager.Instance.HasDash())
         {
             Vector3 dashDirection = transform.forward;
@@ -136,19 +142,30 @@ public class FirstPersonController : MonoBehaviour
             else if (Input.GetKey(KeyCode.A)) dashDirection = -transform.right;
             else if (Input.GetKey(KeyCode.D)) dashDirection = transform.right;
 
-            controller.Move(dashDirection * dashForce * Time.deltaTime);
-            Debug.Log("DASH!");
+            // Apply dash as an instant velocity change
+            velocity += dashDirection * dashForce;
+            Debug.Log("DASH! Velocity: " + velocity);
         }
 
-        // Slow-mo perception (Calm emotion)
+        // Slow-mo perception (Calm emotion) - Hold Left Alt
         if (EmotionManager.Instance != null && EmotionManager.Instance.HasSlowMo())
         {
-            // Slow-mo is handled by Time.timeScale in EmotionManager or separate script
-            // This is just a placeholder for the ability
-            if (Input.GetKeyDown(KeyCode.LeftAlt))
+            if (Input.GetKey(KeyCode.LeftAlt))
             {
+                // Slow down time when holding Left Alt
+                Time.timeScale = 0.3f;
                 Debug.Log("Slow-mo perception activated");
             }
+            else if (Time.timeScale < 1.0f)
+            {
+                // Restore normal time when released
+                Time.timeScale = 1.0f;
+            }
+        }
+        else if (Time.timeScale < 1.0f)
+        {
+            // Restore normal time if not in Calm realm
+            Time.timeScale = 1.0f;
         }
     }
 

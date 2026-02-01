@@ -142,9 +142,9 @@ public class FirstPersonController : MonoBehaviour
             else if (Input.GetKey(KeyCode.A)) dashDirection = -transform.right;
             else if (Input.GetKey(KeyCode.D)) dashDirection = transform.right;
 
-            // Apply dash as an instant velocity change
-            velocity += dashDirection * dashForce;
-            Debug.Log("DASH! Velocity: " + velocity);
+            // Apply instant dash movement (not velocity)
+            controller.Move(dashDirection * dashForce);
+            Debug.Log("DASH! Moved " + dashForce + " units in direction: " + dashDirection);
         }
 
         // Slow-mo perception (Calm emotion) - Hold Left Alt

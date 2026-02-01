@@ -47,16 +47,31 @@ public class GameManager : MonoBehaviour
 
     public void EnterRealm(int realmIndex)
     {
+        Debug.Log("EnterRealm called with index: " + realmIndex);
+        
         if (realmIndex < 0 || realmIndex >= realmSceneNames.Length)
         {
-            Debug.LogError("Invalid realm index: " + realmIndex);
+            Debug.LogError("Invalid realm index: " + realmIndex + ". Available scenes: " + string.Join(", ", realmSceneNames));
             return;
+        }
+
+        string sceneName = realmSceneNames[realmIndex];
+        Debug.Log("Attempting to load scene: " + sceneName);
+        
+        // Check if scene exists
+        if (Application.CanStreamedLevelBeLoaded(sceneName))
+        {
+            Debug.Log("Scene " + sceneName + " can be loaded");
+        }
+        else
+        {
+            Debug.LogWarning("Scene " + sceneName + " might not exist or not be added to build settings");
         }
 
         currentRealm = realmIndex;
         isPlayerInRealm = (realmIndex > 0); // 0 = Ancestral Plane, >0 = emotion realm
-        SceneManager.LoadScene(realmSceneNames[realmIndex]);
-        Debug.Log("Entering realm: " + realmSceneNames[realmIndex]);
+        SceneManager.LoadScene(sceneName);
+        Debug.Log("Loading scene: " + sceneName);
     }
 
     public void EnterRealm(EmotionalState emotion)

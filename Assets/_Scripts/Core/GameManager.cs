@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            Debug.Log("GameManager initialized. Balance: " + balanceMeter);
         }
         else
         {
@@ -157,11 +158,13 @@ public class GameManager : MonoBehaviour
 
     public void RecordMindfulAction()
     {
+        Debug.Log("RecordMindfulAction called");
         UpdateBalance(5f); // Increase balance for mindful actions
     }
 
     public void RecordChaoticAction()
     {
+        Debug.Log("RecordChaoticAction called");
         UpdateBalance(-5f); // Decrease balance for chaotic actions
     }
 

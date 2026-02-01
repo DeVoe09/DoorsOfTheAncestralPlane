@@ -126,11 +126,13 @@ public class FirstPersonController : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftShift) && (x != 0 || z != 0))
             {
                 // Running is chaotic
+                Debug.Log("Player is running - recording chaotic action");
                 GameManager.Instance.RecordChaoticAction();
             }
             else if (x == 0 && z == 0)
             {
                 // Standing still is mindful
+                Debug.Log("Player is standing still - recording mindful action");
                 GameManager.Instance.RecordMindfulAction();
             }
         }

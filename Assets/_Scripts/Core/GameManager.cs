@@ -98,8 +98,11 @@ public class GameManager : MonoBehaviour
 
     public void UpdateBalance(float change)
     {
+        Debug.Log("UpdateBalance called. Before: " + balanceMeter + ", Change: " + change);
         balanceMeter += change;
+        Debug.Log("After adding change: " + balanceMeter);
         balanceMeter = Mathf.Clamp(balanceMeter, 0f, 100f);
+        Debug.Log("After clamp: " + balanceMeter);
 
         // Notify listeners
         OnBalanceChanged?.Invoke(balanceMeter);
